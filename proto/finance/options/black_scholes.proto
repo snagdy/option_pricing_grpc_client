@@ -15,18 +15,34 @@ enum OptionType {
 
 // Input parameters for Black-Scholes option pricing
 message BlackScholesParameters {
-  double stock_price      = 1;  // S: Current stock price
-  double strike_price     = 2;  // K: Strike price
-  double risk_free_rate   = 3;  // r: Risk-free interest rate (decimal, e.g., 0.05 for 5%)
-  double dividend_rate    = 4;  // q: Continuous dividend rate (decimal, e.g., 0.05 for 5%)
+  double stock_price      = 1;  // S:     Current stock price
+  double strike_price     = 2;  // K:     Strike price
+  double risk_free_rate   = 3;  // r:     Risk-free interest rate (decimal, e.g., 0.05 for 5%)
+  double dividend_rate    = 4;  // q:     Continuous dividend rate (decimal, e.g., 0.05 for 5%)
   double volatility       = 5;  // sigma: Volatility of the underlying asset (decimal)
-  double time_to_maturity = 6;  // T: Time to maturity in years
+  double time_to_maturity = 6;  // T:     Time to maturity in years
+  OptionType option_type  = 7;  // Whether this is a call or put option
+}
+
+// Input parameters for Black-Scholes option implied volatility
+message BlackScholesImpliedVolParameters {
+  double option_premium   = 1;  // C/P: Call or put premium
+  double stock_price      = 2;  // S:   Current stock price
+  double strike_price     = 3;  // K:   Strike price
+  double risk_free_rate   = 4;  // r:   Risk-free interest rate (decimal, e.g., 0.05 for 5%)
+  double dividend_rate    = 5;  // q:   Continuous dividend rate (decimal, e.g., 0.05 for 5%)
+  double time_to_maturity = 6;  // T:   Time to maturity in years
   OptionType option_type  = 7;  // Whether this is a call or put option
 }
 
 // Request message for option pricing
 message OptionPricingRequest {
   BlackScholesParameters parameters = 1;
+}
+
+// Request message for option implied vol
+message OptionImpliedVolRequest {
+  BlackScholesImpliedVolParameters parameters = 1;
 }
 
 // Response message containing the computed option price
@@ -38,8 +54,18 @@ message OptionPricingResponse {
   OptionType option_type  = 5;
 }
 
+// Response message containing the computed implied volatility
+message OptionImpliedVolResponse {
+  double implied_volatility = 1;
+  double delta              = 2;
+  double gamma              = 3;
+  double vega               = 4;
+  OptionType option_type    = 5;
+}
+
 // Service definition for option pricing
 service OptionPricingService {
   // Calculates the price of an option using Black-Scholes model
   rpc CalculateOptionPrice(OptionPricingRequest) returns (OptionPricingResponse) {}
+  rpc CalculateImpliedVol(OptionImpliedVolRequest) returns (OptionImpliedVolResponse) {}
 }

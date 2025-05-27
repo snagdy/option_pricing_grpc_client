@@ -1,2 +1,4 @@
 .idea/
-*pb2*.py
+*pb2.py
+*pb2_grpc.py
+*.proto
