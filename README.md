@@ -120,3 +120,9 @@ export SERVER_ADDRESS=<service_ip:port>                 # NOTE: the service_ip c
 
 python option_pricing_client_async_experiment.py
 ```
+
+## Planned Updates
+
+- Validation script for cross-checking IV produced for a given option premium, against the sigma used to generate that option premium.
+
+- Some numba JIT compilation optimisations where possible.
